@@ -31,6 +31,7 @@
 #include "noise1234.h"
 #include "simplexnoise1234.h"
 #include "cellular.h"
+#include "math.h"
 
 #define IMAGE_SIZE 400
 
@@ -161,12 +162,15 @@ int main(int argc, char *argv[]) {
 				red = 128 + 127*noise3(8.0*x, 8.0*y, 0.5*time);
 
 				// Cellular (Worley) noise
-//				point[0] = 12.0*x;
-//				point[1] = 12.0*y;
-//				point[2] = 0.2*time;
-//				Worley(point, 2, F, delta, ID);
-//				red = 120*(F[1]-F[0]);
-
+				point[0] = 50.0 * (x - 0.5);
+				point[1] = 50.0 * (y - 0.5);
+				point[2] = 0.2;
+				Worley(point, 2, F, delta, ID);
+				double smooth = ((F[1] - F[0]) - 0.05) / (0.25);
+				smooth = fmax(fmin(smooth, 1.0), 0.0);
+				smooth = smooth * smooth * (3 - 2 * smooth);
+				red = 120.0 * smooth;
+				
 				// Set red=grn=blu for grayscale image
 				grn = red;
 				blu = red;
