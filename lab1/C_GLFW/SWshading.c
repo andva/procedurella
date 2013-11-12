@@ -130,6 +130,8 @@ int main(int argc, char *argv[]) {
     glTexParameteri ( GL_TEXTURE_2D , GL_TEXTURE_WRAP_S , GL_REPEAT );
     glTexParameteri ( GL_TEXTURE_2D , GL_TEXTURE_WRAP_T , GL_REPEAT );
 
+
+	
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -137,6 +139,10 @@ int main(int argc, char *argv[]) {
         fps = computeFPS(window);
         time = glfwGetTime();
 
+		double r1 = 0.5 + 0.5 * noise3(x, y + 1, 0.1 * time);
+		double r2 = 0.5 + 0.5 * noise3(x, y + 5, 0.1 * time);
+		double r3 = 0.5 + 0.5 * noise3(x, y + 7, 0.1 * time);
+		
 		// Set the clear color and depth, and clear the buffers for drawing
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -158,31 +164,28 @@ int main(int argc, char *argv[]) {
 		    for(j=0; j<IMAGE_SIZE; j++)
 			{
 				y = (double)j / IMAGE_SIZE;
-
+				
 				// lava noise
-				red = 128 + 127*noise3(8.0*x, 8.0*y, 0.5*time);
+				double intensity = 128 + 127*noise3(8.0*x, 8.0*y, 0.5*time);
 
 				// Cellular (Worley) noise
 				point[0] = 50.0 * (x - 0.5);
 				point[1] = 50.0 * (y - 0.5);
 				point[2] = 0.2;
-				Worley(point, 2, F, delta, ID);
-
-				double smooth = 255. * smoothStep((F[1] - F[0]), 0.05, 0.3);
 				
 				// Mask noise
 				double mask = 128 + 127 *snoise2(x * 1.5, y * 1.5);
 				
 				mask = smoothStep(mask, 100., 255.);
 
-				red = red * mask; // + (1. - mask) * smooth;
-				if (mask < 0.1) {
-					red = smooth;
-				}
+				double fun = 128. + 127. * snoise3(100. * x, 100. * y, 0.1 * time);
+				
+				intensity = fun * (1 - smoothStep(mask, 0.0, 0.1)) + intensity * mask;
 				
 				// Set red=grn=blu for grayscale image
-				grn = red;
-				blu = red;
+				red = r1 * intensity;
+				grn = r2 * intensity;
+				blu = r3 * intensity;
 
 				k = (i + j*IMAGE_SIZE)*4;
 				pixels[k] = red;
