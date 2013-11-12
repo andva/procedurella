@@ -32,6 +32,7 @@
 #include "simplexnoise1234.h"
 #include "cellular.h"
 #include "math.h"
+#include "myshader.h"
 
 #define IMAGE_SIZE 400
 
@@ -149,7 +150,7 @@ int main(int argc, char *argv[]) {
 		if ( location_tex != -1 ) {
              glUniform1i ( location_tex , 0);
 		}
-
+		
 	    // Regenerate all the texture data on the CPU for every frame
 	    for(i=0; i<IMAGE_SIZE; i++)
 		{
@@ -158,7 +159,7 @@ int main(int argc, char *argv[]) {
 			{
 				y = (double)j / IMAGE_SIZE;
 
-				// Perlin noise
+				// lava noise
 				red = 128 + 127*noise3(8.0*x, 8.0*y, 0.5*time);
 
 				// Cellular (Worley) noise
@@ -166,10 +167,18 @@ int main(int argc, char *argv[]) {
 				point[1] = 50.0 * (y - 0.5);
 				point[2] = 0.2;
 				Worley(point, 2, F, delta, ID);
-				double smooth = ((F[1] - F[0]) - 0.05) / (0.25);
-				smooth = fmax(fmin(smooth, 1.0), 0.0);
-				smooth = smooth * smooth * (3 - 2 * smooth);
-				red = 120.0 * smooth;
+
+				double smooth = 255. * smoothStep((F[1] - F[0]), 0.05, 0.3);
+				
+				// Mask noise
+				double mask = 128 + 127 *snoise2(x * 1.5, y * 1.5);
+				
+				mask = smoothStep(mask, 100., 255.);
+
+				red = red * mask; // + (1. - mask) * smooth;
+				if (mask < 0.1) {
+					red = smooth;
+				}
 				
 				// Set red=grn=blu for grayscale image
 				grn = red;
