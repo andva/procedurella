@@ -73,7 +73,7 @@ color color_part(point sphere_center;
 }
 
 surface surface_shader(point sphere_center = vector(0, 0, 0);
-					   point look_dir = vector(0.1, 0.6, -1);
+					   point look_dir = vector(0.3, 0.2, -1);
 					   float dilation = 29.;) {
 	color c = color_part(sphere_center, look_dir, dilation);
 	Ci = c;

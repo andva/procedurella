@@ -21,15 +21,16 @@ Identity
  
 AttributeBegin
  
-  Color [1.0 0.6 0.0] # A nice orange color
-  Surface "surface_shader"
-  TransformBegin
-    Rotate 90 1 0 0   # Rotate +z to +y. "Up" in default camera coordinates is +y,
-    Sphere 1 -1 1 360 # but the Sphere primitive has its poles on the z axis.
-  TransformEnd
- 
+	Color [1.0 0.6 0.0] # A nice orange color
+	Surface "surface_shader"
+	TransformBegin
+		Rotate 90 1 0 0   # Rotate +z to +y. "Up" in default camera coordinates is +y,
+		Sphere 1 -1 1 360 # but the Sphere primitive has its poles on the z axis.
+		
+	TransformEnd
+	
 AttributeEnd
- 
+
 WorldEnd
  
 FrameEnd
