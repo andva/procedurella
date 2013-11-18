@@ -22,7 +22,7 @@ Identity
 AttributeBegin
  
   Color [1.0 0.6 0.0] # A nice orange color
-  Surface "plastic" "Ka" [1] "Kd" [0.5] "Ks" 1 "roughness" 0.1
+  Surface "surface_shader"
   TransformBegin
     Rotate 90 1 0 0   # Rotate +z to +y. "Up" in default camera coordinates is +y,
     Sphere 1 -1 1 360 # but the Sphere primitive has its poles on the z axis.
