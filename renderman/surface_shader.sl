@@ -58,13 +58,17 @@ color calc_veins(point sphere_center;
 color create_inner(point sphere_center;
 				   point look_dir;) {
 	float angle = calcAngleFromLook(sphere_center, look_dir, N);
-	return color(0,0,0);
+	float n = noise(P * 5) + noise(P * 20) + noise(P);
+	color c = mix(color(0,0,1), color(1,1,1), n / 3);
+	float t = smoothstep(8, 10, degrees(angle));
+	c = mix(color(0, 0, 0), c, t);
+	return c;
 }
 
 color color_part(point sphere_center;
 				 point look_dir;
 				 float dilation) {
-	float angle = calcAngleFromLook(sphere_center, look_dir, N + 0.1 * noise(P));
+	float angle = calcAngleFromLook(sphere_center, look_dir, N);
 	color c1 = calc_veins(sphere_center, look_dir);
 	color c2 = create_inner(sphere_center, look_dir);
 	float t = smoothstep(dilation - 1, dilation + 1, degrees(angle));

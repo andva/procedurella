@@ -2,36 +2,43 @@
  
 FrameBegin 1
  
-Display "simple.tif" "file" "rgba"
-Format 640 480 -1
-ShadingRate 1
-Projection "perspective" "fov" [30]
-FrameAspectRatio 1.33
-Identity
- 
-## Default distant headlight
-LightSource "distantlight" 1
- 
-## Camera transformation
-Translate 0 0 5
- 
-WorldBegin
- 
-Identity
- 
-AttributeBegin
- 
-	Color [1.0 0.6 0.0] # A nice orange color
-	Surface "surface_shader"
-	TransformBegin
-		Rotate 90 1 0 0   # Rotate +z to +y. "Up" in default camera coordinates is +y,
-		Sphere 1 -1 1 360 # but the Sphere primitive has its poles on the z axis.
-		
-	TransformEnd
+	Display "simple.tif" "file" "rgba"
+	Format 640 480 -1
+	PixelSamples 4 4
+	ShadingRate 1
+	Projection "perspective" "fov" [22]
+	FrameAspectRatio 1.33
+	Identity
 	
-AttributeEnd
+	## Default distant headlight
+	LightSource "distantlight" 1
+	LightSource "distantlight" 2 "intensity" [2]"from" [0 0 -6]"to" [0 0 0]
+	
+	## Camera transformation
+	Translate 0.4 -0.5 8
+	Rotate -20 1 0 0
+	Rotate -20 0 1 0 
+	WorldBegin
 
-WorldEnd
+		Identity
+		Illuminate 1 1
+		AttributeBegin
+			
+			Surface "surface_shader"
+			TransformBegin
+				Translate -0.7 0.5 0
+				Sphere 0.5 -0.5 0.5 360
+			TransformEnd
+			
+		AttributeEnd
+		
+		AttributeBegin	
+			Color [1 1 1]
+			Surface "plastic"
+			Polygon "P" [ -5 0 5  5 0 5  5 0 -5  -5 0 -5 ]
+		AttributeEnd
+		
+	WorldEnd
  
 FrameEnd
 
