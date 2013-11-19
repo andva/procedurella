@@ -17,13 +17,29 @@ color create_yellow(point sphere_center;
 	color irisColor = mix(yellow, orange, xcomp(noise(N * 10)));
 
 	float distR = v;
-	float dist = distR;
-	dist += 0.1 * noise(10*s,10*t);
-	dist += 0.05 * noise(20*s, 20*t);
-	dist += 0.025 * noise(40*s, 40*t);
-	color center = mix(irisColor, bg, smoothstep(0.2, 0.25, dist));
+	float angle = u;
+
+	float dist = distR + 0.1 * fbm(15.0 * N);
+	float rand = fbm(vector(6.0 * distR, 40 * angle, 0.0));
+
+	float rays = angle * 30 + 5 * noise(10 * s, 10 * t);
+	float rayt = distR * 10;
+	float raypattern = clamp(-0.5 + 2 * noise(rays, rayt), 0, 1);
+		
+	color center = mix(irisColor, bg, raypattern);
+	center = mix(center, bg, smoothstep(0.07, 0.2, dist));
 	center = mix(color(0,0,0), center, smoothstep(0.06, 0.08, distR));
 	return center;
+}
+
+color sstep(color old;
+			color add;
+			float i;
+			float r;
+			float a)
+{
+	float f = smoothstep(0.3, 1.0, fbm(vector(6.0 * r + 10 * i, 40 * a + 10 * i, 0.0)));
+	return mix(old, add, f);
 }
 
 color create_inner(point sphere_center;
@@ -34,12 +50,16 @@ color create_inner(point sphere_center;
 	float a = u;
 	// add noise
 	a += 0.1 * fbm(15.0 * N);
-	float f = smoothstep(0.3, 1.0, fbm(vector(6.0 * r, 40 * a, 0.0)));
 	
 	color c1 = color(0, .08, 0.92);
 	/* color c2 = color(a / (2 * 3.1415)); */
 	color c2 = color(1);
-	color tot = mix(c1, c2, f);
+
+	color tot = sstep(c1, c2, 0, r, a);
+	float i;
+	for (i = 0; i < 2; i += 1) {
+		tot = sstep(tot, c2, i, r, a);
+	}
 	return mix(tot, c1, smoothstep(0.19, 0.23, r));
 }
 
@@ -52,8 +72,8 @@ color color_part(point sphere_center;
 	color c2 = create_inner(sphere_center, look_dir, radius);
 	
 	float tval = smoothstep(0.21, 0.23, dist);
-	/* color c = create_yellow(sphere_center, look_dir, mix(c2, c1, tval)); */
-	color c = mix(c2, c1, tval);
+	color c = create_yellow(sphere_center, look_dir, mix(c2, c1, tval));
+	/* color c = mix(c2, c1, tval); */
 	return c;
 }
 
