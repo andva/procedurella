@@ -32,11 +32,11 @@ float edgeFinder(point sphere_center;
 				 point pos) {
 	float contrast = 0.3;
 	
-	float angle = calcAngleFromLook(sphere_center, look_dir, N);
+	/* float angle = calcAngleFromLook(sphere_center, look_dir, N); */
 
 	float sample_distance = 0.005;
-	float t = smoothstep(0, radians(100), angle);
-	sample_distance = mix(0, 0.005, t);
+	/* float t = smoothstep(0, radians(100), angle); */
+	/* sample_distance = mix(0, 0.005, t); */
 	
 	float v0 = xcomp(veins(pos));
 	vector sample_point = pos + vector(sample_distance, 0, 0);
