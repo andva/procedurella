@@ -50,9 +50,9 @@ color create_inner(point sphere_center;
 	float a = u;
 	// add noise
 	a += 0.1 * fbm(15.0 * N);
-	
+
 	color c1 = color(0, .08, 0.92);
-	/* color c2 = color(a / (2 * 3.1415)); */
+	
 	color c2 = color(1);
 
 	color tot = sstep(c1, c2, 0, r, a);
@@ -68,12 +68,12 @@ color color_part(point sphere_center;
 				 float dilation;
 				 float radius;) {
 	float dist = v;
-	color c1 = color(1);//calc_veins(sphere_center, look_dir);
+	color c1 = calc_veins(sphere_center, look_dir);
 	color c2 = create_inner(sphere_center, look_dir, radius);
-	
-	float tval = smoothstep(0.21, 0.23, dist);
+	float rrand = dist + 0.01 * fbm(5 * P);
+	float tval = smoothstep(0.21, 0.23, rrand);
 	color c = create_yellow(sphere_center, look_dir, mix(c2, c1, tval));
-	/* color c = mix(c2, c1, tval); */
+
 	return c;
 }
 
