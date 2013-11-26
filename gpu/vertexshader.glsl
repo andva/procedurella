@@ -10,10 +10,10 @@ uniform float time;
 
 out vec3 interpolatedNormal;
 out vec2 st;
-
+out vec3 pos;
 void main(){
-	vec3 pos = Position; //+ 0.01*Normal*sin(10.0*time+10.0*Position.y);
-	gl_Position = (P * MV) * vec4(pos, 1.0);
+	pos = Position; //+ 0.01*Normal*sin(10.0*time+10.0*Position.y);
+	gl_Position = (P * MV) * vec4(Position, 1.0);
 	interpolatedNormal = mat3(MV) * Normal;
 	st = TexCoord;
 }
