@@ -282,20 +282,41 @@ vec2 cellular(vec3 P) {
 }
 
 void main() {
-	vec2 coord = vec2(st.s * 10., st.t * 10.) + 0.2 * vec2(snoise(vec3(st.s, st.t, 2)));
+	float cellsX = 5; // + 0.04 * snoise(vec3(st.s * 15, st.t * 15, 1));;
+	float cellsY = 8; // + 0.04 * snoise(vec3(st.s * 15, st.t * 15, 1));
 
-	/* vec3 groundcolor = texture(tex,coord).rgb; */
+	float ss = cellsX * st.s;// + 0.7 * cellular(vec3(st.s, 0, 0)).s;
+	float tt = cellsY * st.t;// + 0.7 * cellular(vec3(st.t, 0, 0)).t;
+
+	float r = floor(ss);
+	float width = 0.4;
+
+	float slocal = ss - floor(ss);
+	float tlocal = tt - floor(tt);
+
+	float rmin = 0.01;
+	float d = 0.005;
+	float rmax = 1 - rmin;
+	float t = min(1, smoothstep(rmin - d, rmin + d, tlocal));
+	t = min(t, smoothstep(rmin - d, rmin + d, slocal));
+	
+	t = min(t, smoothstep(rmax - d, rmax + d, tlocal));
+	t = min(t, smoothstep(rmax - d, rmax + d, slocal));	
+
 	vec3 brickcolor = vec3(0.8, 0.8, 0.8);
-	float alpha = texture(tex, st+vec2(-0.02*time, 0.0)).a;
+	vec3 gapcolor = vec3(0.1, 0.12, 0.09);
 
-	vec3 cloudcolor = vec3(1.0, 1.0, 1.0);
+	float green = snoise(vec3(st.s, st.t, 0));
+	float fix = smoothstep(0.25, 0.3, green);
+	/* brickcolor = mix(vec3(0, 1, 0), brickcolor, fix); */
+	/* brickcolor *= green; */
 	
-	vec3 diffusecolor = mix(groundcolor, groundcolor, alpha);
-	
+	vec3 diffusecolor = mix(gapcolor, brickcolor, t);
+
 	vec3 nNormal = normalize(interpolatedNormal);
 	
 	float diffuse = max(0.0, nNormal.z);
-
-	color = vec4(diffusecolor * diffuse, 1.0);
+	
+	color = vec4(diffuse * brickcolor, 1.0);
 }
 
