@@ -307,10 +307,11 @@ void main() {
 
 	float green = snoise(vec3(pos * 3));
 	float fix = smoothstep(0.25, 0.3, green);
-	
+	float leafrand = 0.7 * snoise(vec3(pos * 40)) + 0.3 * snoise(vec3(pos * 100)) + 0.1 * snoise(vec3(pos * 3));
 	vec3 diffusecolor = mix(gapcolor, brickcolor, t);
 
-	vec3 leafs = vec3(46. / 255., 139. / 255., 87. / 255.);
+	vec3 leafs = vec3(46. / 255., 139. / 255., 87. / 255.) * (1 - leafrand);
+	
 	
 	diffusecolor = mix(diffusecolor, leafs, fix);
 
